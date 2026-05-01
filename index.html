@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Y Games — офлайн-портал | Лицензионное соглашение</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, system-ui, 'Inter', Roboto, sans-serif;
+            background: #0f0f11;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Шапка */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 15, 17, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid #2c2c30;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFCF4A, #FF9F2E);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .badge {
+            background: #2a2a2e;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #aaa;
+        }
+        .legal-links {
+            display: flex;
+            gap: 20px;
+        }
+        .legal-link {
+            color: #ffcf4a;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .legal-link:hover {
+            opacity: 0.7;
+        }
+
+        /* Контейнер */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        /* Модальные окна для соглашений */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            background: #18181c;
+            border-radius: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 28px;
+            border: 1px solid #ffcf4a30;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .modal h2 {
+            color: #ffcf4a;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .modal h3 {
+            margin: 20px 0 10px 0;
+            color: #ddd;
+        }
+        .modal p, .modal li {
+            color: #aaa;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        .modal ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .close-modal {
+            background: #ffcf4a;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            color: #0f0f11;
+        }
+        .modal::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        /* Остальные стили как в предыдущей версии */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .game-card {
+            background: #18181c;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid #2c2c30;
+            transition: transform 0.15s;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: #ffcf4a40;
+        }
+        .card-img {
+            background: #25252b;
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 58px;
+        }
+        .card-info {
+            padding: 14px;
+        }
+        .game-title {
+            font-weight: 700;
+            font-size: 17px;
+        }
+        .game-meta {
+            font-size: 12px;
+            color: #8e8e99;
+        }
+        .game-launcher {
+            background: #131317;
+            border-radius: 32px;
+            border: 1px solid #2a2a30;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        .launcher-header {
+            padding: 14px 20px;
+            background: #1a1a1f;
+            border-bottom: 1px solid #2c2c30;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .game-frame {
+            width: 100%;
+            height: 520px;
+            border: none;
+            background: #0b0b0e;
+        }
+        .custom-game-block {
+            background: #18181c;
+            border-radius: 28px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        textarea {
+            width: 100%;
+            background: #0f0f12;
+            border: 1px solid #33333a;
+            color: #eef;
+            border-radius: 20px;
+            padding: 16px;
+            font-family: monospace;
+            resize: vertical;
+            margin: 10px 0;
+        }
+        .y-btn {
+            background: #2c2c32;
+            padding: 10px 28px;
+            border-radius: 36px;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .y-btn.gold {
+            background: #ffcf4a;
+            color: #121212;
+        }
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: #5e5e6a;
+            border-top: 1px solid #232327;
+            padding-top: 28px;
+            margin-top: 20px;
+        }
+        .hide {
+            display: none;
+        }
+        @media (max-width: 680px) {
+            .game-frame { height: 420px; }
+            .games-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo-area">
+        <span class="logo">Y Games</span>
+        <span class="badge">офлайн-портал</span>
+    </div>
+    <div class="legal-links">
+        <a class="legal-link" id="showAgreement">📄 Лицензионное соглашение</a>
+        <a class="legal-link" id="showPrivacy">🔒 Политика конфиденциальности</a>
+    </div>
+</header>
+
+<div class="container">
+    <div class="game-launcher">
+        <div class="launcher-header">
+            <span id="activeGameTitle">🎮 Выберите игру</span>
+            <button class="y-btn" id="closeGameBtn">✕ Закрыть</button>
+        </div>
+        <iframe id="gameIframe" class="game-frame" srcdoc="<html style='background:#0f0f12;display:flex;align-items:center;justify-content:center;color:#aaa'><div>🎮 Выберите игру из списка ниже</div></html>"></iframe>
+    </div>
+
+    <div class="games-grid" id="gamesGrid"></div>
+
+    <div class="custom-game-block">
+        <div style="font-weight: 500;">✨ Своя игра — вставьте HTML код</div>
+        <textarea id="userCode" rows="4" placeholder="&lt;div style='background:#1e293b;padding:20px'&gt;&lt;h2&gt;Моя игра&lt;/h2&gt;&lt;button onclick=&quot;alert('Привет!')&quot;&gt;Кнопка&lt;/button&gt;&lt;/div&gt;"></textarea>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="y-btn gold" id="runCustom">🚀 Запустить свою игру</button>
+            <button class="y-btn" id="clearCode">🗑 Очистить</button>
+            <button class="y-btn" id="loadExample">⭐ Пример-кликер</button>
+        </div>
+    </div>
+    <footer>
+        © 2025 Y Games — Все игры работают полностью офлайн. Данные не собираются.
+    </footer>
+</div>
+
+<!-- Модальное окно: Лицензионное соглашение -->
+<div id="agreementModal" class="modal-overlay">
+    <div class="modal">
+        <h2>📜 Лицензионное соглашение</h2>
+        <p><strong>Последнее обновление:</strong> 1 мая 2026 г.</p>
+        
+        <h3>1. Общие положения</h3>
+        <p>Настоящее Лицензионное соглашение (далее — «Соглашение») является юридическим документом между вами («Пользователь») и Y Games («Платформа»), регулирующим использование игрового портала, включая все встроенные и пользовательские игры.</p>
+        
+        <h3>2. Лицензия на использование</h3>
+        <p>Платформа предоставляет Пользователю <strong>бесплатную, неисключительную, непередаваемую лицензию</strong> на использование программного кода и игр в личных, некоммерческих целях. Запрещается:</p>
+        <ul>
+            <li>Распространение модифицированных версий без указания оригинального источника;</li>
+            <li>Использование для создания вредоносного или мошеннического ПО;</li>
+            <li>Декомпиляция или обратная разработка встроенных игр.</li>
+        </ul>
+        
+        <h3>3. Ответственность</h3>
+        <p>Y Games не несёт ответственности за любой ущерб, прямой или косвенный, возникший в результате использования платформы. Все игры предоставляются «как есть». Ответственность за содержимое пользовательских HTML-игр лежит исключительно на Пользователе.</p>
+        
+        <h3>4. Офлайн-режим</h3>
+        <p>Платформа полностью функционирует без подключения к Интернету после первоначальной загрузки. Пользователь вправе использовать все игры автономно.</p>
+        
+        <h3>5. Изменение условий</h3>
+        <p>Администрация оставляет за собой право изменять условия Соглашения с уведомлением через интерфейс портала.</p>
+        
+        <h3>6. Применимое право</h3>
+        <p>Споры регулируются законодательством по месту жительства Пользователя.</p>
+        
+        <button class="close-modal" data-modal="agreement">Принимаю и закрыть</button>
+    </div>
+</div>
+
+<!-- Модальное окно: Политика конфиденциальности -->
+<div id="privacyModal" class="modal-overlay">
+    <div class="modal">
+        <h2>🔒 Политика конфиденциальности</h2>
+        <p><strong>Версия:</strong> 2.0 | <strong>Дата:</strong> 01.05.2026</p>
+        
+        <h3>1. Какие данные мы собираем</h3>
+        <p><strong>Y Games НЕ собирает, НЕ хранит и НЕ передаёт никакие персональные данные.</strong> Платформа работает полностью офлайн, весь код выполняется локально на устройстве Пользователя. Никакая информация не отправляется на сервера.</p>
+        
+        <h3>2. Локальное хранение</h3>
+        <p>Браузер может сохранять файл .html локально для последующего использования. Это стандартная функция браузеров, не контролируемая платформой. Пользователь может удалить файл в любой момент.</p>
+        
+        <h3>3. Сторонние библиотеки</h3>
+        <p>Платформа использует CDN для загрузки Three.js и Cannon.js (физический движок). При загрузке этих библиотек ваш браузер может передавать стандартные технические данные (IP, тип браузера) на сервера CDN. Y Games не контролирует эти сервера. Рекомендуем ознакомиться с политикой конфиденциальности Cloudflare CDN.</p>
+        
+        <h3>4. Пользовательский код</h3>
+        <p>При вставке собственного HTML-кода в поле «Своя игра» весь код выполняется локально и не передаётся третьим лицам. Вы несёте полную ответственность за содержимое вставляемых скриптов.</p>
+        
+        <h3>5. Права пользователя</h3>
+        <ul>
+            <li>Полное удаление платформы — просто удалите HTML-файл.</li>
+            <li>Очистка кэша браузера удалит все временные данные.</li>
+            <li>Никаких запросов на обработку данных не требуется, т.к. данные не обрабатываются.</li>
+        </ul>
+        
+        <h3>6. Согласие</h3>
+        <p>Используя платформу, вы подтверждаете, что ознакомлены с данной Политикой конфиденциальности и принимаете её условия.</p>
+        
+        <h3>7. Контакты</h3>
+        <p>По вопросам, связанным с конфиденциальностью: <strong>y-games@privacy.local</strong> (офлайн-форма для обратной связи не предусмотрена).</p>
+        
+        <button class="close-modal" data-modal="privacy">Принимаю и закрыть</button>
+    </div>
+</div>
+
+<script>
+    // ---------- БИБЛИОТЕКА ИГР ----------
+    const games = [
+        { id: "shooter", title: "Standoff 2 · AK", icon: "🔫🔥", category: "Экшн", htmlUrl: null, isBuiltin: true,
+          getHtml: () => `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><style>body{margin:0;overflow:hidden;background:#000;font-family:sans-serif;touch-action:none;}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"><\/script><script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"><\/script></head><body>
+<div id="ammoDisplay" style="position:fixed;bottom:20px;left:20px;color:#ffcf4a;font-size:24px;font-weight:bold;z-index:100;background:rgba(0,0,0,0.6);padding:8px 16px;border-radius:30px;">30 / 90</div>
+<div id="moveZone" style="position:fixed;bottom:0;left:0;width:45%;height:40%;z-index:50;"></div>
+<div id="shootBtn" style="position:fixed;bottom:80px;right:30px;width:80px;height:80px;background:rgba(220,50,40,0.7);border-radius:50%;border:3px solid #ffcf4a;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;z-index:50;">FIRE</div>
+<div id="reloadBtn" style="position:fixed;bottom:170px;right:40px;width:55px;height:55px;background:rgba(0,0,0,0.6);border-radius:15px;border:2px solid #ffcf4a;display:flex;align-items:center;justify-content:center;color:white;z-index:50;">R</div>
+<script>
+let world, scene, camera, renderer, playerGroup, cameraHolder, enemies=[], ragdollParts=[], activeEnemies=0;
+let ammo=30, reserve=90, isReloading=false, lastShoot=0, moveActive=false, moveX=0, moveZ=0;
+let playerBody;
+const MAX_ENEMIES=4;
+const ammoUI=document.getElementById('ammoDisplay');
+
+function updateAmmoUI(){ ammoUI.innerText=ammo+' / '+reserve; }
+
+// Инициализация
+(function init(){
+    world=new CANNON.World(); world.gravity.set(0,-9.82,0);
+    scene=new THREE.Scene(); scene.background=new THREE.Color(0x0a0a1a); scene.fog=new THREE.FogExp2(0x0a0a1a,0.008);
+    camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.01,1000);
+    renderer=new THREE.WebGLRenderer(); renderer.setSize(window.innerWidth,window.innerHeight); renderer.shadowMap.enabled=true;
+    document.body.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0x404060,0.6));
+    let sun=new THREE.DirectionalLight(0xffeedd,1.2); sun.position.set(8,20,5); sun.castShadow=true; scene.add(sun);
+    // Пол
+    let ground=new THREE.Mesh(new THREE.PlaneGeometry(50,50), new THREE.MeshStandardMaterial({color:0x2a2a2e}));
+    ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+    let gBody=new CANNON.Body({mass:0}); gBody.addShape(new CANNON.Box(new CANNON.Vec3(25,0.2,25))); gBody.position.set(0,-0.2,0); world.addBody(gBody);
+    // Стены
+    function addWall(x,z,w,h,d){ let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:0x6b4c3b})); m.position.set(x,h/2,z); m.castShadow=true; scene.add(m); let b=new CANNON.Body({mass:0}); b.addShape(new CANNON.Box(new CANNON.Vec3(w/2,h/2,d/2))); b.position.set(x,h/2,z); world.addBody(b); }
+    addWall(0,-14,28,4,0.6); addWall(0,14,28,4,0.6); addWall(-14,0,0.6,4,28); addWall(14,0,0.6,4,28);
+    addWall(6,4,2.5,1.8,2.5); addWall(-5,-6,2.2,1.5,2.2);
+    // Игрок
+    playerGroup=new THREE.Group(); cameraHolder=new THREE.Group(); playerGroup.add(cameraHolder); cameraHolder.add(camera); scene.add(playerGroup);
+    playerBody=new CANNON.Body({mass:1}); playerBody.addShape(new CANNON.Sphere(0.4)); playerBody.position.set(0,1.2,0); playerBody.fixedRotation=true; world.addBody(playerBody);
+    // Оружие
+    let vm={}; const akGroup=new THREE.Group();
+    let body=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.14,0.45),new THREE.MeshStandardMaterial({color:0x1a1a1a})); akGroup.add(body);
+    let mag=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.22,0.14),new THREE.MeshStandardMaterial({color:0x333})); mag.position.set(0,-0.18,-0.12); akGroup.add(mag);
+    akGroup.position.set(0.28,-0.38,-0.65); camera.add(akGroup); vm.ak=akGroup; vm.mag=mag;
+    // Враги
+    function spawnEnemy(){ if(activeEnemies>=MAX_ENEMIES) return;
+        let x=(Math.random()-0.5)*18, z=(Math.random()-0.5)*16+(Math.random()>0.5?6:-6);
+        let g=new THREE.Group();
+        let torso=new THREE.Mesh(new THREE.BoxGeometry(0.45,0.65,0.25),new THREE.MeshStandardMaterial({color:0x2c3e2c})); torso.position.y=0.9; torso.name="torso";
+        let head=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.28,0.28),new THREE.MeshStandardMaterial({color:0xccaa88})); head.position.y=1.35; head.name="head";
+        g.add(torso,head); g.position.set(x,0,z); scene.add(g);
+        enemies.push({group:g,torso,head,hp:100,isDead:false,parts:[torso,head]}); activeEnemies++;
+    }
+    for(let i=0;i<3;i++) spawnEnemy();
+    // Стрельба
+    function shoot(){ if(isReloading||ammo<=0||Date.now()-lastShoot<110) return;
+        lastShoot=Date.now(); ammo--; updateAmmoUI();
+        vm.ak.position.z+=0.12; setTimeout(()=>vm.ak.position.z=0,80);
+        let raycaster=new THREE.Raycaster(); raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
+        let hits=raycaster.intersectObjects(enemies.flatMap(e=>e.parts));
+        if(hits.length){ let hit=hits[0]; let e=enemies.find(en=>en.parts.includes(hit.object));
+        if(e&&!e.isDead){ e.hp-=45; if(e.hp<=0){ e.isDead=true; activeEnemies--;
+            let pos=e.group.position.clone();
+            let partsArr=e.parts.map(p=>{let b=new CANNON.Body({mass:2}); b.addShape(new CANNON.Box(new CANNON.Vec3(0.2,0.2,0.2))); b.position.copy(p.getWorldPosition(new THREE.Vector3())); world.addBody(b); return{b,three:p};});
+            partsArr.forEach(p=>p.three.position.copy(p.b.position));
+            scene.remove(e.group); enemies=enemies.filter(en=>en!==e);
+            setTimeout(()=>spawnEnemy(),2000);
+        }}}}
+    }
+    // Перезарядка
+    function reload(){ if(isReloading||reserve<=0||ammo===30) return; isReloading=true; let step=0; let int=setInterval(()=>{ step++; if(step===1) vm.mag.visible=false; if(step===20){ vm.mag.visible=true; let need=30-ammo; let take=Math.min(need,reserve); ammo+=take; reserve-=take; updateAmmoUI(); isReloading=false; clearInterval(int); } },30); }
+    document.getElementById('reloadBtn').onclick=reload;
+    let fireActive=false; document.getElementById('shootBtn').ontouchstart=e=>{e.preventDefault(); fireActive=true;}; document.getElementById('shootBtn').ontouchend=()=>fireActive=false;
+    let moveId=null, lastX=0,lastY=0;
+    document.getElementById('moveZone').ontouchstart=e=>{ e.preventDefault(); let t=e.touches[0]; moveId=t.identifier; };
+    document.getElementById('moveZone').ontouchmove=e=>{ e.preventDefault(); for(let t of e.changedTouches) if(t.identifier===moveId){ moveX=(t.clientX-window.innerWidth/4)/80; moveZ=(t.clientY-window.innerHeight*0.3)/80; moveX=Math.min(0.7,Math.max(-0.7,moveX)); moveZ=Math.min(0.6,Math.max(-0.6,moveZ)); } };
+    document.getElementById('moveZone').ontouchend=e=>{ moveId=null; moveX=0; moveZ=0; };
+    function animate(){ requestAnimationFrame(animate); world.step(1/60);
+        if(moveId!==null){ let f=new THREE.Vector3(0,0,-1).applyQuaternion(playerGroup.quaternion); let r=new THREE.Vector3(1,0,0).applyQuaternion(playerGroup.quaternion); playerBody.velocity.x=(moveX*r.x+moveZ*f.x)*5; playerBody.velocity.z=(moveX*r.z+moveZ*f.z)*5; }
+        else{ playerBody.velocity.x*=0.95; playerBody.velocity.z*=0.95; }
+        playerGroup.position.copy(playerBody.position); playerGroup.position.y=0;
+        if(fireActive) shoot();
+        vm.ak.position.z+=(0-vm.ak.position.z)*0.15;
+        renderer.render(scene,camera);
+    }
+    animate();
+    window.addEventListener('resize',()=>{ camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+})();
+<\/script>
+</body></html>` }
+    ];
+    
+    // Добавим еще одну игру для разнообразия
+    games.push({ id: "clicker", title: "🍪 Кликер-печенька", icon: "🍪✨", category: "Казуальная", getHtml: () => `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{background:linear-gradient(135deg,#667eea,#764ba2);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;font-family:sans-serif;}.game{background:rgba(0,0,0,0.5);border-radius:48px;padding:40px;text-align:center;color:white;}.cookie{font-size:100px;cursor:pointer;transition:transform 0.1s;}.cookie:active{transform:scale(0.9);}button{background:gold;border:none;padding:12px 24px;border-radius:40px;margin-top:20px;font-weight:bold;}</style></head><body><div class="game"><h1>🍪 Кликер</h1><div class="cookie" id="cookie">🍪</div><h2 id="count">0</h2><button id="reset">Сброс</button></div><script>let c=0;const el=document.getElementById('count');document.getElementById('cookie').onclick=()=>{c++;el.innerText=c;};document.getElementById('reset').onclick=()=>{c=0;el.innerText=c;};<\/script></body></html>` });
+    
+    // DOM элементы
+    const iframe = document.getElementById("gameIframe");
+    const gamesGrid = document.getElementById("gamesGrid");
+    const runCustomBtn = document.getElementById("runCustom");
+    const clearCodeBtn = document.getElementById("clearCode");
+    const loadExampleBtn = document.getElementById("loadExample");
+    const userCode = document.getElementById("userCode");
+    const closeGameBtn = document.getElementById("closeGameBtn");
+    const activeTitleSpan = document.getElementById("activeGameTitle");
+    
+    function loadGame(html, title) {
+        iframe.srcdoc = html;
+        activeTitleSpan.innerHTML = `🎮 ${title}`;
+    }
+    
+    // Рендерим карточки
+    games.forEach(game => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.innerHTML = `<div class="card-img">${game.icon}</div><div class="card-info"><div class="game-title">${game.title}</div><div class="game-meta">${game.category}</div></div>`;
+        card.onclick = () => loadGame(game.getHtml(), game.title);
+        gamesGrid.appendChild(card);
+    });
+    
+    // Своя игра
+    runCustomBtn.onclick = () => {
+        let code = userCode.value.trim();
+        if(!code) code = "<div style='padding:40px;text-align:center'>Вставьте ваш HTML код</div>";
+        const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body style="margin:0;background:#0f0f12;color:white">${code}</body></html>`;
+        loadGame(full, "Моя игра");
+    };
+    clearCodeBtn.onclick = () => { userCode.value = ""; };
+    loadExampleBtn.onclick = () => {
+        userCode.value = `<div style="background:linear-gradient(135deg,#1e293b,#0f172a);min-height:100%;display:flex;align-items:center;justify-content:center;font-family:sans-serif;">
+<div style="background:#0f0f12;border-radius:48px;padding:40px;text-align:center;">
+<div style="font-size:80px;">🎨</div>
+<h2>Ваша игра</h2>
+<button onclick="alert('Привет из своей игры!')" style="background:#ffcf4a;border:none;padding:12px 32px;border-radius:40px;">Нажми</button>
+</div></div>`;
+        runCustomBtn.click();
+    };
+    closeGameBtn.onclick = () => {
+        iframe.srcdoc = "<html style='background:#0f0f12;display:flex;align-items:center;justify-content:center;color:#aaa'><div>🎮 Игра закрыта. Выберите другую</div></html>";
+        activeTitleSpan.innerHTML = "🎮 Игра не выбрана";
+    };
+    
+    // ========== МОДАЛЬНЫЕ ОКНА (юридические документы) ==========
+    const agreementModal = document.getElementById("agreementModal");
+    const privacyModal = document.getElementById("privacyModal");
+    
+    function showModal(modal) {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+    function hideModal(modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+    
+    document.getElementById("showAgreement").onclick = (e) => { e.preventDefault(); showModal(agreementModal); };
+    document.getElementById("showPrivacy").onclick = (e) => { e.preventDefault(); showModal(privacyModal); };
+    
+    document.querySelectorAll(".close-modal").forEach(btn => {
+        btn.onclick = () => {
+            hideModal(agreementModal);
+            hideModal(privacyModal);
+        };
+    });
+    window.onclick = (e) => {
+        if(e.target === agreementModal) hideModal(agreementModal);
+        if(e.target === privacyModal) hideModal(privacyModal);
+    };
+    
+    // Загружаем первую игру по умолчанию
+    loadGame(games[0].getHtml(), games[0].title);
+</script>
+</body>
+</html>
